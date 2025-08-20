@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markota | Premium Quiz Master</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #fca311;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --background: #ffffff;
+            --card-bg: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #6c757d;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --background: #121212;
+            --card-bg: #1e1e1e;
+            --text-primary: #f1f1f1;
+            --text-secondary: #a0a0a0;
+            --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .icon {
+  margin-right: 5px; /* space between icon and text */
+  
+ 
+}
+
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .app-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: var(--transition);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .quiz-screen {
+            text-align: center;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            margin: 0 auto 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            box-shadow: 0 5px 20px rgba(67, 97, 238, 0.3);
+            overflow: hidden;
+        }
+
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .question-text {
+            font-size: 22px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 576px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .option-btn {
+            padding: 15px;
+            border: 2px solid #e1e5ee;
+            border-radius: 12px;
+            background: var(--card-bg);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .option-btn.correct {
+            border-color: #4ade80;
+            background-color: rgba(74, 222, 128, 0.1);
+        }
+
+        .option-btn.incorrect {
+            border-color: var(--danger);
+            background-color: rgba(247, 37, 133, 0.1);
+        }
+
+        .timer-container {
+            margin: 0 auto 20px;
+            width: 100px;
+            height: 100px;
+            position: relative;
+        }
+
+        .timer {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0%, #e1e5ee 0%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            transition: background 1s linear;
+        }
+
+        .timer-inner {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e1e5ee;
+            border-radius: 50px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 50px;
+            transition: width 0.3s ease;
+        }
+
+        .results-container {
+            text-align: center;
+        }
+
+        .score {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 20px 0;
+            color: var(--primary);
+        }
+
+        .result-text {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e1e5ee;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .data-input {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #e1e5ee;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            margin-bottom: 20px;
+            resize: vertical;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: var(--success);
+            color: white;
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .image-upload-container {
+            margin-top: 20px;
+            border-top: 1px solid #e1e5ee;
+            padding-top: 20px;
+        }
+
+        .upload-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 10px auto;
+            overflow: hidden;
+            border: 2px dashed var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .question-item {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .question-item h4 {
+            margin-bottom: 10px;
+        }
+
+        .question-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            position: absolute;
+            right: 15px;
+            top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="app-title">Markota | Premium Quiz Master</h1>
+            <button class="theme-toggle" id="themeToggle">🌙</button>
+        </div>
+
+        <!-- Data Input Mode -->
+        <div class="card" id="dataInputPanel">
+            <h2>Quiz Data Input</h2>
+            <p>Paste your quiz questions in JSON format:</p>
+            <textarea class="data-input" id="quizDataInput" placeholder='[
+  {
+    "question": "What is the capital of Pakistan?",
+    "options": ["Karachi", "Islamabad", "Lahore", "Peshawar"],
+    "answer": "Islamabad"
+  },
+  {
+    "question": "Which planet is known as the Red Planet?",
+    "options": ["Earth", "Mars", "Venus", "Jupiter"],
+    "answer": "Mars"
+  }
+]'></textarea>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="loadQuizData()">
+                    <i class="fas fa-check icon"></i> Load Questions
+                </button>
+                <button class="btn" onclick="document.getElementById('quizDataInput').value = ''">
+                    <i class="fas fa-trash icon"></i> Clear
+                </button>
+            </div>
+            
+            <div class="questions-list">
+                <h3>Please dont select any option when quiz is running </h3>
+                <div id="questionsList">
+                    <!-- Questions will be added here -->
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="" id="startQuiz" onclick="startQuiz()" disabled>
+                    <i class=""></i> 
+                </button>
+            </div>
+        </div>
+
+        <!-- Image Upload Mode -->
+        <div class="card quiz-screen hidden" id="imageUploadScreen">
+            <h2>Add Images to Questions</h2>
+            <p>You can add images to the questions if you want.:</p>
+            
+            <div id="imageUploadList">
+                <!-- Image upload items will be added here -->
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="finishImageUpload()">
+                    <i class="fas fa-check icon"></i> Finish & Start Quiz
+                </button>
+                <button class="btn btn-warning" onclick="goBackToHome()">
+                    <i class="fas fa-home icon"></i> Back to Home
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Mode -->
+        <div class="card quiz-screen hidden" id="quizScreen">
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div class="profile-pic" id="profilePic">
+                <i class="fas fa-user"></i>
+            </div>
+            
+            <h2 class="question-text" id="currentQuestion"></h2>
+            
+            <div class="options-container" id="optionsContainerQuiz">
+                <!-- Options will be added here -->
+            </div>
+            
+            <div class="timer-container">
+                <div class="timer" id="timer">
+                    <div class="timer-inner">
+                        <span id="timerText">5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Mode -->
+        <div class="card results-container hidden" id="resultsScreen">
+            <h2>Quiz Results</h2>
+            <div class="score" id="score"></div>
+            <p id="resultMessage"></p>
+            
+            <div class="result-text">
+                <h3></h3>
+                <div id="quizSummary">
+                    <!-- Results will be added here -->
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="resetQuiz()">
+                    <i class="fas fa-redo icon"></i> Try Again
+                </button>
+                <button class="btn btn-success" onclick="copyResults()">
+                    <i class="fas fa-copy icon"></i> Copy Results text 
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <span id="notificationText"></span>
+    </div>
+
+    <script>
+        // Global variables
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer;
+        let timeLeft = 5;
+        let quizStarted = false;
+
+        // DOM Elements
+        const dataInputPanel = document.getElementById('dataInputPanel');
+        const imageUploadScreen = document.getElementById('imageUploadScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const questionsList = document.getElementById('questionsList');
+        const imageUploadList = document.getElementById('imageUploadList');
+        const currentQuestionElement = document.getElementById('currentQuestion');
+        const optionsContainerQuiz = document.getElementById('optionsContainerQuiz');
+        const timerElement = document.getElementById('timer');
+        const timerText = document.getElementById('timerText');
+        const progressBar = document.getElementById('progressBar');
+        const scoreElement = document.getElementById('score');
+        const resultMessage = document.getElementById('resultMessage');
+        const quizSummary = document.getElementById('quizSummary');
+        const themeToggle = document.getElementById('themeToggle');
+        const profilePic = document.getElementById('profilePic');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+
+        // Theme toggle
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            themeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        });
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            notification.style.backgroundColor = type === 'success' ? 'var(--success)' : 'var(--danger)';
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Go back to home screen
+        function goBackToHome() {
+            imageUploadScreen.classList.add('hidden');
+            dataInputPanel.classList.remove('hidden');
+        }
+
+        // Load quiz data from textarea
+        function loadQuizData() {
+            const quizDataInput = document.getElementById('quizDataInput').value;
+            
+            if (!quizDataInput.trim()) {
+                showNotification('Please paste quiz data first', 'danger');
+                return;
+            }
+            
+            try {
+                const parsedData = JSON.parse(quizDataInput);
+                
+                if (!Array.isArray(parsedData)) {
+                    throw new Error('Quiz data should be an array');
+                }
+                
+                // Validate each question
+                parsedData.forEach((question, index) => {
+                    if (!question.question || !question.options || !question.answer) {
+                        throw new Error(`Question ${index + 1} is missing required fields`);
+                    }
+                    
+                    if (!Array.isArray(question.options) || question.options.length !== 4) {
+                        throw new Error(`Question ${index + 1} must have exactly 4 options`);
+                    }
+                    
+                    if (!question.options.includes(question.answer)) {
+                        throw new Error(`Question ${index + 1} answer must be one of the options`);
+                    }
+                });
+                
+                questions = parsedData;
+                updateQuestionsList();
+                showNotification('Quiz data loaded successfully!');
+                
+                // Check if any questions need images
+                const needsImages = questions.some(q => !q.image);
+                if (needsImages) {
+                    showImageUploadScreen();
+                }
+                
+            } catch (error) {
+                showNotification('Error: ' + error.message, 'danger');
+                console.error('Error parsing quiz data:', error);
+            }
+        }
+
+        // Show image upload screen
+        function showImageUploadScreen() {
+            dataInputPanel.classList.add('hidden');
+            imageUploadScreen.classList.remove('hidden');
+            
+            // Generate image upload items
+            imageUploadList.innerHTML = '';
+            
+            questions.forEach((question, index) => {
+                const uploadItem = document.createElement('div');
+                uploadItem.className = 'question-item';
+                uploadItem.innerHTML = `
+                    <h4>${index + 1}. ${question.question}</h4>
+                    <div class="upload-preview" id="preview-${index}">
+                        <i class="fas fa-image" style="font-size: 30px; color: #ccc;"></i>
+                    </div>
+                    <input type="file" id="image-${index}" accept="image/*" style="display: none;" onchange="handleImageUpload(${index})">
+                    <button class="btn btn-sm btn-primary" onclick="document.getElementById('image-${index}').click()">
+                        <i class="fas fa-upload icon"></i> Upload Image
+                    </button>
+                `;
+                
+                imageUploadList.appendChild(uploadItem);
+            });
+        }
+
+        // Handle image upload
+        function handleImageUpload(index) {
+            const fileInput = document.getElementById(`image-${index}`);
+            const preview = document.getElementById(`preview-${index}`);
+            
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    // Store image as data URL
+                    questions[index].image = e.target.result;
+                    
+                    // Update preview
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Question Image">`;
+                }
+                
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+
+        // Finish image upload and start quiz
+        function finishImageUpload() {
+            imageUploadScreen.classList.add('hidden');
+            startQuiz();
+        }
+
+        // Update questions list UI
+        function updateQuestionsList() {
+            questionsList.innerHTML = '';
+            
+            if (questions.length === 0) {
+                questionsList.innerHTML = '<p>No questions loaded. Paste your quiz data above.</p>';
+                document.getElementById('startQuiz').disabled = true;
+                return;
+            }
+            
+            questions.forEach((question, index) => {
+                const questionItem = document.createElement('div');
+                questionItem.className = 'question-item';
+                
+                let imageHtml = '';
+                if (question.image) {
+                    imageHtml = `<img src="${question.image}" alt="Question Image" class="question-image">`;
+                }
+                
+                questionItem.innerHTML = `
+                    ${imageHtml}
+                    <h4>${index + 1}. ${question.question}</h4>
+                    <p>Options: ${question.options.join(', ')}</p>
+                    <p>Correct Answer: ${question.answer}</p>
+                `;
+                
+                questionsList.appendChild(questionItem);
+            });
+            
+            // Enable start quiz button
+            document.getElementById('startQuiz').disabled = false;
+        }
+
+        // Start the quiz
+        function startQuiz() {
+            if (questions.length === 0) {
+                showNotification('Please load questions first', 'danger');
+                return;
+            }
+            
+            // Hide other screens and show quiz screen
+            dataInputPanel.classList.add('hidden');
+            imageUploadScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            
+            // Reset quiz variables
+            currentQuestionIndex = 0;
+            score = 0;
+            quizStarted = true;
+            
+            // Load first question
+            loadQuestion();
+        }
+
+        // Load question
+        function loadQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                endQuiz();
+                return;
+            }
+            
+            const question = questions[currentQuestionIndex];
+            
+            // Update progress bar
+            progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+            
+            // Set question text
+            currentQuestionElement.textContent = question.question;
+            
+            // Set profile picture
+            if (question.image) {
+                profilePic.innerHTML = `<img src="${question.image}" alt="Question Image">`;
+            } else {
+                profilePic.innerHTML = '<i class="fas fa-user"></i>';
+            }
+            
+            // Clear options container
+            optionsContainerQuiz.innerHTML = '';
+            
+            // Add options
+            question.options.forEach((option, index) => {
+                const optionButton = document.createElement('button');
+                optionButton.className = 'option-btn';
+                optionButton.textContent = option;
+                optionButton.onclick = () => selectOption(option);
+                optionsContainerQuiz.appendChild(optionButton);
+            });
+            
+            // Reset timer display
+            timerText.textContent = '5';
+            timerElement.style.background = 'conic-gradient(var(--primary) 0%, #e1e5ee 0%)';
+            
+            // Start timer after 4 seconds delay
+            setTimeout(startTimer, 4000);
+        }
+
+        // Start timer
+        function startTimer() {
+            timeLeft = 5;
+            timerText.textContent = timeLeft;
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                timerText.textContent = timeLeft;
+                
+                // Update timer animation
+                const percentage = 100 - (timeLeft / 5 * 100);
+                timerElement.style.background = `conic-gradient(var(--primary) ${percentage}%, #e1e5ee ${percentage}%)`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    highlightCorrectAnswer();
+                    
+                    // Move to next question after 2 seconds
+                    setTimeout(() => {
+                        currentQuestionIndex++;
+                        loadQuestion();
+                    }, 2000);
+                }
+            }, 1000);
+        }
+
+        // Select option
+        function selectOption(selectedOption) {
+            if (!quizStarted || timeLeft <= 0) return;
+            
+            clearInterval(timer);
+            
+            const question = questions[currentQuestionIndex];
+            const optionButtons = document.querySelectorAll('.option-btn');
+            
+            // Highlight selected option
+            optionButtons.forEach(button => {
+                if (button.textContent === selectedOption) {
+                    button.classList.add(selectedOption === question.answer ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Highlight correct answer if wrong
+            if (selectedOption !== question.answer) {
+                optionButtons.forEach(button => {
+                    if (button.textContent === question.answer) {
+                        button.classList.add('correct');
+                    }
+                });
+            }
+            
+            // Update score
+            if (selectedOption === question.answer) {
+                score++;
+            }
+            
+            // Move to next question after 2 seconds
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 2000);
+        }
+
+        // Highlight correct answer when time runs out
+        function highlightCorrectAnswer() {
+            const question = questions[currentQuestionIndex];
+            const optionButtons = document.querySelectorAll('.option-btn');
+            
+            optionButtons.forEach(button => {
+                if (button.textContent === question.answer) {
+                    button.classList.add('correct');
+                }
+            });
+        }
+
+        // End quiz
+        function endQuiz() {
+            quizStarted = false;
+            
+            // Hide quiz screen and show results screen
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+            
+            // Update score
+            scoreElement.textContent = `${score}/${questions.length}`;
+            
+            // Set result message
+            const percentage = (score / questions.length) * 100;
+            if (percentage >= 80) {
+                resultMessage.textContent = "Excellent job! You're a quiz master!";
+            } else if (percentage >= 60) {
+                resultMessage.textContent = "Good effort! Keep practicing to improve.";
+            } else {
+                resultMessage.textContent = "Nice try! Practice makes perfect.";
+            }
+            
+            // Generate quiz summary
+            quizSummary.innerHTML = '';
+            questions.forEach((question) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.innerHTML = `
+                    <p><strong>${question.question}</strong><br>${question.answer}</p>
+                `;
+                quizSummary.appendChild(resultItem);
+            });
+        }
+
+        // Copy results to clipboard
+        function copyResults() {
+            let resultText = `Quiz Results: ${score}/${questions.length}\n\n`;
+            
+            questions.forEach((question) => {
+                resultText += `${question.question}\n${question.answer}\n\n`;
+            });
+            
+            navigator.clipboard.writeText(resultText)
+                .then(() => showNotification("Results copied to clipboard!"))
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                    showNotification("Failed to copy results", 'danger');
+                });
+        }
+
+        // Reset quiz
+        function resetQuiz() {
+            resultsScreen.classList.add('hidden');
+            dataInputPanel.classList.remove('hidden');
+            questions.forEach(q => {
+                if (q.image && q.image.startsWith('data:')) {
+                    delete q.image;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
